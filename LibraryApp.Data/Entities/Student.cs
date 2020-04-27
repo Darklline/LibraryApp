@@ -4,16 +4,17 @@ using System.Text;
 
 namespace LibraryApp.Data.Entities
 {
-    public class Author
+    public class Student
     {
-        public Author()
+        public Student()
         {
-            Books = new List<Book>();
+            StudentBooks = new List<StudentBook>();
         }
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public List<Book> Books { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public List<StudentBook> StudentBooks { get; set; }
 
     }
 }
