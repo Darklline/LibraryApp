@@ -28,11 +28,6 @@ namespace LibraryApp.API.Services
 
         public bool AuthorExists(int authorId)
         {
-            if(authorId == 0)
-            {
-                throw new ArgumentNullException(nameof(authorId));
-            }
-
             return _context.Authors.Any(a => a.Id == authorId);
         }
 
@@ -72,6 +67,26 @@ namespace LibraryApp.API.Services
             {
                 // dispose resources when needed
             }
+        }
+
+        public IEnumerable<Book> GetBooks(int authorId)
+        {
+            return _context.Books.ToList().Where(b => b.AuthorId == authorId);
+        }
+
+        public Book GetBook(int authorId, int bookId)
+        {
+            return _context.Books.Where(b => b.AuthorId == authorId && b.Id == bookId).FirstOrDefault();
+        }
+
+        public void AddBook(int authorId, Book book)
+        {
+            if(book == null)
+            {
+                throw new ArgumentNullException(nameof(book));
+            }
+            book.AuthorId = authorId;
+            _context.Books.Add(book);
         }
     }
 }

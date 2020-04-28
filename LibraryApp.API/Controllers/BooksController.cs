@@ -1,110 +1,55 @@
-﻿using System;
+﻿using LibraryApp.API.Services;
+using LibraryApp.Data.Entities;
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using LibraryApp.Data.DbContexts;
-using LibraryApp.Data.Entities;
 
 namespace LibraryApp.API.Controllers
 {
-    [Route("api/books")]
     [ApiController]
+    [Route("api/Authors/{authorId}/books")]
     public class BooksController : ControllerBase
     {
-        private readonly LibraryContext _context;
+        private readonly ILibraryRepository libraryRepository;
 
-        public BooksController(LibraryContext context)
+        public BooksController(ILibraryRepository libraryRepository)
         {
-            _context = context;
+            this.libraryRepository = libraryRepository;
         }
 
-        // GET: api/Books
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
+        public ActionResult<IEnumerable<Book>> GetBooksForAuthor(int authorId)
         {
-            return await _context.Books.ToListAsync();
+            if (!libraryRepository.AuthorExists(authorId)) return NotFound();
+
+            var booksForAuthorFromRepo = libraryRepository.GetBooks(authorId);
+            return Ok(booksForAuthorFromRepo);
         }
 
-        // GET: api/Books/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Book>> GetBook(int id)
+        [HttpGet("{bookId}", Name = "GetBookForAuthor")]
+        public ActionResult<Book> GetBookForAuthor(int authorId, int bookId)
         {
-            var book = await _context.Books.FindAsync(id);
+            if (!libraryRepository.AuthorExists(authorId)) return NotFound();
 
-            if (book == null)
-            {
-                return NotFound();
-            }
+            var bookForAuthorFromRepo = libraryRepository.GetBook(authorId, bookId);
 
-            return book;
+            if (bookForAuthorFromRepo == null) return NotFound();
+
+            return Ok(bookForAuthorFromRepo);
         }
 
-        // PUT: api/Books/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutBook(int id, Book book)
-        {
-            if (id != book.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(book).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!BookExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/Books
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Book>> PostBook(Book book)
+        public ActionResult<Book> CreateBookForAuthor(int authorId, Book book)
         {
-            _context.Books.Add(book);
-            await _context.SaveChangesAsync();
+            if (!libraryRepository.AuthorExists(authorId)) return NotFound();
 
-            return CreatedAtAction("GetBook", new { id = book.Id }, book);
-        }
+            libraryRepository.AddBook(authorId, book);
+            libraryRepository.Save();
 
-        // DELETE: api/Books/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Book>> DeleteBook(int id)
-        {
-            var book = await _context.Books.FindAsync(id);
-            if (book == null)
-            {
-                return NotFound();
-            }
-
-            _context.Books.Remove(book);
-            await _context.SaveChangesAsync();
-
-            return book;
-        }
-
-        private bool BookExists(int id)
-        {
-            return _context.Books.Any(e => e.Id == id);
+            return CreatedAtRoute("GetBookForAuthor", new { bookId = book.Id, authorId = book.AuthorId }, book);
         }
     }
 }

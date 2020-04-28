@@ -8,7 +8,9 @@ namespace LibraryApp.API.Services
 {
     public interface ILibraryRepository
     {
-        //Author DbSet
+        void AddBook(int authorId, Book book);
+        Book GetBook(int authorId, int bookId);
+        IEnumerable<Book> GetBooks(int authorId);
         IEnumerable<Author> GetAuthors();
         Author GetAuthor(int authorId);
         void AddAuthor(Author author);
@@ -16,5 +18,6 @@ namespace LibraryApp.API.Services
         void UpdateAuthor(Author author);
         bool AuthorExists(int authorId);
         bool Save();
+        
     }
 }
