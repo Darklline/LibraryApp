@@ -15,6 +15,6 @@ namespace LibraryApp.API.Services
         void DeleteAuthor(Author author);
         void UpdateAuthor(Author author);
         bool AuthorExists(int authorId);
-        bool save();
+        bool Save();
     }
 }

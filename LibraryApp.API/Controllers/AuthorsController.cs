@@ -23,9 +23,38 @@ namespace LibraryApp.API.Controllers
         }
 
         [HttpGet()]
+        [HttpHead]
         public ActionResult<IEnumerable<Author>> GetAuthors()
         {
-            return Ok(libraryRepository.GetAuthors());
+            var authorsFromRepo = libraryRepository.GetAuthors();
+
+            return Ok(authorsFromRepo);
+        }
+
+        [HttpGet("{authorId}", Name = "GetAuthor")]
+        public IActionResult GetAuthor(int authorId)
+        {
+            var authorFromRepo = libraryRepository.GetAuthor(authorId);
+
+            if (authorFromRepo == null) return NotFound();
+
+            return Ok(authorFromRepo);
+        }
+
+        [HttpPost]
+        public ActionResult<Author> CreateAuthor(Author author)
+        {
+            libraryRepository.AddAuthor(author);
+            libraryRepository.Save();
+
+            return CreatedAtRoute("GetAuthor", new { authorId = author.Id }, author);
+        }
+
+        [HttpOptions]
+        public IActionResult GetAuthorsOptions()
+        {
+            Response.Headers.Add("Allow", "GET,OPTIONS,POST");
+            return Ok();
         }
     }
 }

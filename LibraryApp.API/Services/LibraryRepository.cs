@@ -18,7 +18,12 @@ namespace LibraryApp.API.Services
 
         public void AddAuthor(Author author)
         {
-            throw new NotImplementedException();
+            if(author == null)
+            {
+                throw new ArgumentNullException(nameof(author));
+            }
+
+            _context.Authors.Add(author);
         }
 
         public bool AuthorExists(int authorId)
@@ -38,7 +43,7 @@ namespace LibraryApp.API.Services
 
         public Author GetAuthor(int authorId)
         {
-            throw new NotImplementedException();
+            return _context.Authors.FirstOrDefault(a => a.Id == authorId);
         }
 
         public IEnumerable<Author> GetAuthors()
@@ -46,9 +51,9 @@ namespace LibraryApp.API.Services
             return _context.Authors.ToList();
         }
 
-        public bool save()
+        public bool Save()
         {
-            throw new NotImplementedException();
+            return (_context.SaveChanges() >= 0);
         }
 
         public void UpdateAuthor(Author author)
