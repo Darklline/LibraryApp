@@ -10,7 +10,7 @@ using LibraryApp.Data.Entities;
 
 namespace LibraryApp.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/books")]
     [ApiController]
     public class BooksController : ControllerBase
     {

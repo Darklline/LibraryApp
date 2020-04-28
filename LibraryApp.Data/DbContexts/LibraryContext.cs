@@ -12,8 +12,6 @@ namespace LibraryApp.Data.DbContexts
         {
             ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
-
-        
         public DbSet<Author> Authors { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<Student> Students { get; set; }

@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
+using LibraryApp.API.Services;
 
 namespace LibraryApp.API
 {
@@ -27,6 +28,7 @@ namespace LibraryApp.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddScoped<ILibraryRepository, LibraryRepository>();
             services.AddDbContext<LibraryContext>(opt =>
             opt.UseSqlServer(Configuration.GetConnectionString("LibraryConnex"))
             .EnableSensitiveDataLogging()
