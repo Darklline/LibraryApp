@@ -12,6 +12,9 @@ namespace LibraryApp.API.Profiles
         public BooksProfile()
         {
             CreateMap<Book, Models.BookDto>();
+
+            CreateMap<Models.BookForUpdateDto, Book>();
+            CreateMap<Book, Models.BookForUpdateDto>();
         }
     }
 }

@@ -9,6 +9,7 @@ namespace LibraryApp.API.Services
 {
     public interface ILibraryRepository
     {
+        void UpdateBook(Book book);
         void AddBook(int authorId, Book book);
         Book GetBook(int authorId, int bookId);
         IEnumerable<Book> GetBooks(int authorId);

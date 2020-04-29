@@ -1,6 +1,7 @@
 ﻿using LibraryApp.API.ResourceParameters;
 using LibraryApp.Data.DbContexts;
 using LibraryApp.Data.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Collections.Generic;
@@ -105,6 +106,11 @@ namespace LibraryApp.API.Services
             }
             book.AuthorId = authorId;
             _context.Books.Add(book);
+        }
+
+        public void UpdateBook(Book book)
+        {
+            _context.Entry(book).State = EntityState.Modified;
         }
     }
 }
