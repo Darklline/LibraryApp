@@ -1,5 +1,6 @@
 using LibraryApp.API.Services;
 using LibraryApp.Data.DbContexts;
+using LibraryApp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Moq;
@@ -19,18 +20,27 @@ namespace LibraryApp.ApiTests
                 .Options;
             using (var context = new LibraryContext(options))
             {
-                var service = new LibraryRepository(context);
-                service.AddAuthor(new Data.Entities.Author()
+                context.Authors.AddRange(new Data.Entities.Author()
                 {
                     FirstName = "John",
                     LastName = "Cena"
+                },
+                new Author()
+                {
+                    FirstName = "Rendy",
+                    LastName = "Orton"
+                },
+                new Author()
+                {
+                    FirstName = "Mark",
+                    LastName = "Anton"
                 });
-                service.Save();
+                context.SaveChanges();
             }
         }
 
         [Test]
-        public void CreatingNewAuthor()
+        public void AddAuthor()
         {
             var options = new DbContextOptionsBuilder<LibraryContext>()
                 .UseInMemoryDatabase(databaseName: "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = LibraryAppData")
@@ -38,10 +48,76 @@ namespace LibraryApp.ApiTests
             using (var context = new LibraryContext(options))
             {
                 var service = new LibraryRepository(context);
-                
-                Assert.IsNotNull(context.Authors.Any(a => a.FirstName == "John"));
+                service.AddAuthor(new Data.Entities.Author()
+                {
+                    FirstName = "Mark",
+                    LastName = "Asd"
+                });
+                service.Save();
+
+                Assert.IsNotNull(context.Authors.Any(a => a.FirstName == "John" && a.LastName == "Asd"));
+            }
+        }
+
+        [Test]
+        public void GetAuthor()
+        {
+            var options = new DbContextOptionsBuilder<LibraryContext>()
+                .UseInMemoryDatabase(databaseName: "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = LibraryAppData")
+                .Options;
+            using (var context = new LibraryContext(options))
+            {
+                var service = new LibraryRepository(context);
+
+                Assert.IsNull(service.GetAuthor(0));
                 Assert.IsNotNull(service.GetAuthor(1));
+            }
+        }
+
+        [Test]
+        public void AuthorExists()
+        {
+            var options = new DbContextOptionsBuilder<LibraryContext>()
+                .UseInMemoryDatabase(databaseName: "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = LibraryAppData")
+                .Options;
+            using (var context = new LibraryContext(options))
+            {
+                var service = new LibraryRepository(context);
+
                 Assert.IsTrue(service.AuthorExists(1));
+                Assert.IsFalse(service.AuthorExists(0));
+            }
+        }
+        [Test]
+        public void GetAuthors()
+        {
+            var options = new DbContextOptionsBuilder<LibraryContext>()
+                .UseInMemoryDatabase(databaseName: "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = LibraryAppData")
+                .Options;
+            using (var context = new LibraryContext(options))
+            {
+                var service = new LibraryRepository(context);
+
+                var act = service.GetAuthors();
+
+                Assert.IsNotNull(act);
+            }
+        }
+        [Test]
+        public void DeleteAuthor()
+        {
+            var options = new DbContextOptionsBuilder<LibraryContext>()
+                .UseInMemoryDatabase(databaseName: "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = LibraryAppData")
+                .Options;
+            using (var context = new LibraryContext(options))
+            {
+                var service = new LibraryRepository(context);
+                var author = new Author(){ Id = 3 };
+
+                Assert.IsTrue(context.Authors.Any(a => a.Id == 3));
+                service.DeleteAuthor(author);
+                context.SaveChanges();
+                Assert.IsFalse(context.Authors.Any(a => a.Id == 3));
             }
         }
     }

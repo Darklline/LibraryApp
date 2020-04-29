@@ -33,7 +33,11 @@ namespace LibraryApp.API.Services
 
         public void DeleteAuthor(Author author)
         {
-            throw new NotImplementedException();
+            if(author == null)
+            {
+                throw new ArgumentNullException(nameof(author));
+            }
+            _context.Authors.Remove(author);
         }
 
         public Author GetAuthor(int authorId)
