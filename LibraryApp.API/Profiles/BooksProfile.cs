@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LibraryApp.API.Models;
 using LibraryApp.Data.Entities;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace LibraryApp.API.Profiles
 
             CreateMap<Models.BookForUpdateDto, Book>();
             CreateMap<Book, Models.BookForUpdateDto>();
+            
         }
     }
 }

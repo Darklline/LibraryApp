@@ -54,11 +54,22 @@ namespace LibraryApp.API.Controllers
 
             return CreatedAtRoute("GetAuthor", new { authorId = author.Id }, author);
         }
+        [HttpDelete("{authorId}")]
+        public ActionResult DeleteAuthor(int authorId)
+        {
+            var authorFromRepo = libraryRepository.GetAuthor(authorId);
+
+            if (authorFromRepo == null) return NotFound();
+
+            libraryRepository.DeleteAuthor(authorFromRepo);
+            libraryRepository.Save();
+            return NoContent();
+        }
 
         [HttpOptions]
         public IActionResult GetAuthorsOptions()
         {
-            Response.Headers.Add("Allow", "GET,OPTIONS,POST");
+            Response.Headers.Add("Allow", "GET,OPTIONS,POST,DELETE");
             return Ok();
         }
     }
