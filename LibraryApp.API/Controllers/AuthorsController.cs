@@ -10,6 +10,7 @@ using LibraryApp.Data.Entities;
 using LibraryApp.API.Services;
 using LibraryApp.API.Models;
 using AutoMapper;
+using LibraryApp.API.ResourceParameters;
 
 namespace LibraryApp.API.Controllers
 {
@@ -28,9 +29,9 @@ namespace LibraryApp.API.Controllers
 
         [HttpGet()]
         [HttpHead]
-        public ActionResult<IEnumerable<AuthorDto>> GetAuthors()
+        public ActionResult<IEnumerable<AuthorDto>> GetAuthors([FromQuery] AuthorResourceParameters authorResourceParameters)
         {
-            var authorsFromRepo = libraryRepository.GetAuthors();
+            var authorsFromRepo = libraryRepository.GetAuthors(authorResourceParameters);
            
             return Ok(mapper.Map<IEnumerable<AuthorDto>>(authorsFromRepo));
         }

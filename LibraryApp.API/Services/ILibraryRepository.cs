@@ -1,4 +1,5 @@
-﻿using LibraryApp.Data.Entities;
+﻿using LibraryApp.API.ResourceParameters;
+using LibraryApp.Data.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace LibraryApp.API.Services
         Book GetBook(int authorId, int bookId);
         IEnumerable<Book> GetBooks(int authorId);
         IEnumerable<Author> GetAuthors();
+        IEnumerable<Author> GetAuthors(AuthorResourceParameters authorResourceParameters);
         Author GetAuthor(int authorId);
         void AddAuthor(Author author);
         void DeleteAuthor(Author author);

@@ -1,4 +1,5 @@
-﻿using LibraryApp.Data.DbContexts;
+﻿using LibraryApp.API.ResourceParameters;
+using LibraryApp.Data.DbContexts;
 using LibraryApp.Data.Entities;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
@@ -18,7 +19,7 @@ namespace LibraryApp.API.Services
 
         public void AddAuthor(Author author)
         {
-            if(author == null)
+            if (author == null)
             {
                 throw new ArgumentNullException(nameof(author));
             }
@@ -33,7 +34,7 @@ namespace LibraryApp.API.Services
 
         public void DeleteAuthor(Author author)
         {
-            if(author == null)
+            if (author == null)
             {
                 throw new ArgumentNullException(nameof(author));
             }
@@ -48,6 +49,19 @@ namespace LibraryApp.API.Services
         public IEnumerable<Author> GetAuthors()
         {
             return _context.Authors.ToList();
+        }
+        public IEnumerable<Author> GetAuthors(AuthorResourceParameters authorResourceParameters)
+        {
+            if (string.IsNullOrWhiteSpace(authorResourceParameters.SearchQuery)) return _context.Authors.ToList();
+
+            var collection = _context.Authors as IQueryable<Author>;
+
+
+            authorResourceParameters.SearchQuery.Trim();
+            collection = collection.Where(a => a.FirstName.Contains(authorResourceParameters.SearchQuery)
+            || a.LastName.Contains(authorResourceParameters.SearchQuery));
+
+            return collection.ToList();
         }
 
         public bool Save()

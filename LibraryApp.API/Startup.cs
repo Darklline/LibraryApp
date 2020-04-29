@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using LibraryApp.API.Services;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 
 namespace LibraryApp.API
 {
@@ -44,6 +45,17 @@ namespace LibraryApp.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler(appBuilder =>
+                {
+                    appBuilder.Run(async context =>
+                    {
+                        context.Response.StatusCode = 500;
+                        await context.Response.WriteAsync("An unexpected fault happened. Try again later !");
+                    });
+                });
             }
 
             app.UseRouting();
