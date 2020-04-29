@@ -9,7 +9,6 @@ using NUnit.Framework;
 using System.Collections;
 using System.Linq;
 
-
 namespace LibraryApp.ApiTests
 {
     public class Tests
@@ -94,8 +93,8 @@ namespace LibraryApp.ApiTests
         public void GetAuthors()
         {
             var options = new DbContextOptionsBuilder<LibraryContext>()
-                .UseInMemoryDatabase(databaseName: "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = LibraryAppData")
-                .Options;
+               .UseInMemoryDatabase(databaseName: "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = LibraryAppData")
+               .Options;
             using (var context = new LibraryContext(options))
             {
                 var service = new LibraryRepository(context);
@@ -106,6 +105,7 @@ namespace LibraryApp.ApiTests
                 Assert.IsInstanceOf<IEnumerable>(act);
             }
         }
+
         [Test]
         public void DeleteAuthor()
         {

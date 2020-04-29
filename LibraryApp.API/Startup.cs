@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using LibraryApp.API.Services;
+using AutoMapper;
 
 namespace LibraryApp.API
 {
@@ -28,6 +29,7 @@ namespace LibraryApp.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<ILibraryRepository, LibraryRepository>();
             //services.AddDbContext<LibraryContext>(opt => opt.UseInMemoryDatabase(Configuration.GetConnectionString("LibraryConnex")));
             services.AddDbContext<LibraryContext>(opt =>

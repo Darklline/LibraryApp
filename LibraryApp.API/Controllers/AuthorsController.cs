@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using LibraryApp.Data.DbContexts;
 using LibraryApp.Data.Entities;
 using LibraryApp.API.Services;
+using LibraryApp.API.Models;
+using AutoMapper;
 
 namespace LibraryApp.API.Controllers
 {
@@ -16,19 +18,21 @@ namespace LibraryApp.API.Controllers
     public class AuthorsController : ControllerBase
     {
         private readonly ILibraryRepository libraryRepository;
+        private readonly IMapper mapper;
 
-        public AuthorsController(ILibraryRepository libraryRepository)
+        public AuthorsController(ILibraryRepository libraryRepository, IMapper mapper)
         {
-            this.libraryRepository = libraryRepository;
+            this.libraryRepository = libraryRepository ?? throw new ArgumentNullException(nameof(libraryRepository));
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         [HttpGet()]
         [HttpHead]
-        public ActionResult<IEnumerable<Author>> GetAuthors()
+        public ActionResult<IEnumerable<AuthorDto>> GetAuthors()
         {
             var authorsFromRepo = libraryRepository.GetAuthors();
-
-            return Ok(authorsFromRepo);
+           
+            return Ok(mapper.Map<IEnumerable<AuthorDto>>(authorsFromRepo));
         }
 
         [HttpGet("{authorId}", Name = "GetAuthor")]
@@ -38,7 +42,7 @@ namespace LibraryApp.API.Controllers
 
             if (authorFromRepo == null) return NotFound();
 
-            return Ok(authorFromRepo);
+            return Ok(mapper.Map<AuthorDto>(authorFromRepo));
         }
 
         [HttpPost]

@@ -1,4 +1,6 @@
-﻿using LibraryApp.API.Services;
+﻿using AutoMapper;
+using LibraryApp.API.Models;
+using LibraryApp.API.Services;
 using LibraryApp.Data.Entities;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -14,10 +16,12 @@ namespace LibraryApp.API.Controllers
     public class BooksController : ControllerBase
     {
         private readonly ILibraryRepository libraryRepository;
+        private readonly IMapper mapper;
 
-        public BooksController(ILibraryRepository libraryRepository)
+        public BooksController(ILibraryRepository libraryRepository, IMapper mapper)
         {
             this.libraryRepository = libraryRepository;
+            this.mapper = mapper;
         }
 
         [HttpGet]
@@ -26,7 +30,7 @@ namespace LibraryApp.API.Controllers
             if (!libraryRepository.AuthorExists(authorId)) return NotFound();
 
             var booksForAuthorFromRepo = libraryRepository.GetBooks(authorId);
-            return Ok(booksForAuthorFromRepo);
+            return Ok(mapper.Map<IEnumerable<BookDto>>(booksForAuthorFromRepo));
         }
 
         [HttpGet("{bookId}", Name = "GetBookForAuthor")]
@@ -38,7 +42,7 @@ namespace LibraryApp.API.Controllers
 
             if (bookForAuthorFromRepo == null) return NotFound();
 
-            return Ok(bookForAuthorFromRepo);
+            return Ok(mapper.Map<BookDto>(bookForAuthorFromRepo));
         }
 
         [HttpPost]
