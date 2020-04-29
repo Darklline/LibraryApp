@@ -16,8 +16,28 @@ namespace LibraryApp.API
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
 
+            // migrate the database
+            using (var scope = host.Services.CreateScope())
+            {
+                try
+                {
+                    var context = scope.ServiceProvider.GetService<LibraryContext>();
+                    //for testing
+                    context.Database.EnsureDeleted();
+                    context.Database.EnsureCreated();
+                    context.Database.Migrate();
+                }
+                catch (Exception ex)
+                {
+                    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+                    logger.LogError(ex, "An error occurred while migrating the database.");
+                }
+            }
+
+            // run the web app
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

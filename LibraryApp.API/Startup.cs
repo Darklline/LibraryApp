@@ -29,6 +29,7 @@ namespace LibraryApp.API
         {
             services.AddControllers();
             services.AddScoped<ILibraryRepository, LibraryRepository>();
+            //services.AddDbContext<LibraryContext>(opt => opt.UseInMemoryDatabase(Configuration.GetConnectionString("LibraryConnex")));
             services.AddDbContext<LibraryContext>(opt =>
             opt.UseSqlServer(Configuration.GetConnectionString("LibraryConnex"))
             .EnableSensitiveDataLogging()
