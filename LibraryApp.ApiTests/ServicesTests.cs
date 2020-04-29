@@ -4,7 +4,9 @@ using LibraryApp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Moq;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using System.Collections;
 using System.Linq;
 
 
@@ -101,6 +103,7 @@ namespace LibraryApp.ApiTests
                 var act = service.GetAuthors();
 
                 Assert.IsNotNull(act);
+                Assert.IsInstanceOf<IEnumerable>(act);
             }
         }
         [Test]
