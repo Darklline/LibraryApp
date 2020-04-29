@@ -8,6 +8,10 @@ namespace LibraryApp.Data.DbContexts
 {
     public class LibraryContext: DbContext
     {
+        public LibraryContext()
+        {
+
+        }
         public LibraryContext(DbContextOptions<LibraryContext> options) : base(options)
         {
             ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
