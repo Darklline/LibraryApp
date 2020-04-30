@@ -107,5 +107,24 @@ namespace LibraryApp.API.Controllers
         //   var options = HttpContext.RequestServices.GetRequiredService<IOptions<ApiBehaviorOptions>>();
         //  return (ActionResult)options.Value.InvalidModelStateResponseFactory(ControllerContext);  
         // }
+        [HttpDelete("{bookId}")]
+        public ActionResult DeleteBook(int authorId, int bookId)
+        {
+            if (!libraryRepository.AuthorExists(authorId)) return NotFound();
+
+            var bookForAuthorFromRepo = libraryRepository.GetBook(authorId, bookId);
+
+            if (bookForAuthorFromRepo == null) return NotFound();
+
+            libraryRepository.DeleteBook(bookForAuthorFromRepo);
+            libraryRepository.Save();
+            return NoContent();
+        }
+        [HttpOptions]
+        public IActionResult GetBooksOptions()
+        {
+            Response.Headers.Add("Allow", "GET,OPTIONS,POST,DELETE,PUT,PATCH");
+            return Ok();
+        }
     }
 }

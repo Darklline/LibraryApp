@@ -12,6 +12,7 @@ namespace LibraryApp.API.Services
         void UpdateBook(Book book);
         void AddBook(int authorId, Book book);
         Book GetBook(int authorId, int bookId);
+        void DeleteBook(Book book);
         IEnumerable<Book> GetBooks(int authorId);
         IEnumerable<Author> GetAuthors();
         IEnumerable<Author> GetAuthors(AuthorResourceParameters authorResourceParameters);

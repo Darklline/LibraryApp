@@ -112,5 +112,14 @@ namespace LibraryApp.API.Services
         {
             _context.Entry(book).State = EntityState.Modified;
         }
+
+        public void DeleteBook(Book book)
+        {
+            if(book == null)
+            {
+                throw new ArgumentNullException();
+            }
+            _context.Books.Remove(book);
+        }
     }
 }
