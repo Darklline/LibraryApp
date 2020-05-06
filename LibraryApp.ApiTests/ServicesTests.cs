@@ -13,12 +13,13 @@ namespace LibraryApp.ApiTests
 {
     public class Tests
     {
+        private DbContextOptions<LibraryContext> options =new DbContextOptionsBuilder<LibraryContext>()
+                .UseInMemoryDatabase(databaseName: "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = LibraryAppData")
+                .Options;
+
         [SetUp]
         public void Setup()
         {
-            var options = new DbContextOptionsBuilder<LibraryContext>()
-                .UseInMemoryDatabase(databaseName: "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = LibraryAppData")
-                .Options;
             using (var context = new LibraryContext(options))
             {
                 context.Authors.AddRange(new Data.Entities.Author()
@@ -43,9 +44,6 @@ namespace LibraryApp.ApiTests
         [Test]
         public void AddAuthor()
         {
-            var options = new DbContextOptionsBuilder<LibraryContext>()
-                .UseInMemoryDatabase(databaseName: "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = LibraryAppData")
-                .Options;
             using (var context = new LibraryContext(options))
             {
                 var service = new LibraryRepository(context);
@@ -63,9 +61,6 @@ namespace LibraryApp.ApiTests
         [Test]
         public void GetAuthor()
         {
-            var options = new DbContextOptionsBuilder<LibraryContext>()
-                .UseInMemoryDatabase(databaseName: "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = LibraryAppData")
-                .Options;
             using (var context = new LibraryContext(options))
             {
                 var service = new LibraryRepository(context);
@@ -78,9 +73,6 @@ namespace LibraryApp.ApiTests
         [Test]
         public void AuthorExists()
         {
-            var options = new DbContextOptionsBuilder<LibraryContext>()
-                .UseInMemoryDatabase(databaseName: "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = LibraryAppData")
-                .Options;
             using (var context = new LibraryContext(options))
             {
                 var service = new LibraryRepository(context);
@@ -92,9 +84,6 @@ namespace LibraryApp.ApiTests
         [Test]
         public void GetAuthors()
         {
-            var options = new DbContextOptionsBuilder<LibraryContext>()
-               .UseInMemoryDatabase(databaseName: "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = LibraryAppData")
-               .Options;
             using (var context = new LibraryContext(options))
             {
                 var service = new LibraryRepository(context);
@@ -109,9 +98,6 @@ namespace LibraryApp.ApiTests
         [Test]
         public void DeleteAuthor()
         {
-            var options = new DbContextOptionsBuilder<LibraryContext>()
-                .UseInMemoryDatabase(databaseName: "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = LibraryAppData")
-                .Options;
             using (var context = new LibraryContext(options))
             {
                 var service = new LibraryRepository(context);
