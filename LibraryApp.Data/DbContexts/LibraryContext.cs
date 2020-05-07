@@ -50,6 +50,42 @@ namespace LibraryApp.Data.DbContexts
                     Id = 4,
                     FirstName = "Sebastian",
                     LastName = "Jey"
+                },
+                new Author()
+                {
+                    Id = 5,
+                    FirstName = "Adrian",
+                    LastName = "Lek"
+                },
+                new Author()
+                {
+                    Id = 6,
+                    FirstName = "Simon",
+                    LastName = "Baed"
+                },
+                new Author()
+                {
+                    Id = 7,
+                    FirstName = "Benjamin",
+                    LastName = "Pear"
+                },
+                new Author()
+                {
+                    Id = 8,
+                    FirstName = "Max",
+                    LastName = "Vila"
+                },
+                new Author()
+                {
+                    Id = 9,
+                    FirstName = "David",
+                    LastName = "Beck"
+                },
+                new Author()
+                {
+                    Id = 10,
+                    FirstName = "Patrick",
+                    LastName = "Aleor"
                 });
 
             modelBuilder.Entity<Book>().HasData(
@@ -101,6 +137,34 @@ namespace LibraryApp.Data.DbContexts
                     Name = "Boys",
                     PageCount = 340,
                     AuthorId = 4
+                },
+                new Book()
+                {
+                    Id = 8,
+                    Name = "Boysd",
+                    PageCount = 340,
+                    AuthorId = 1
+                },
+                new Book()
+                {
+                    Id = 9,
+                    Name = "Boyss",
+                    PageCount = 340,
+                    AuthorId = 1
+                },
+                new Book()
+                {
+                    Id = 10,
+                    Name = "Boysz",
+                    PageCount = 340,
+                    AuthorId = 3
+                },
+                new Book()
+                {
+                    Id = 11,
+                    Name = "Boysc",
+                    PageCount = 340,
+                    AuthorId = 2
                 });
             base.OnModelCreating(modelBuilder);
         }

@@ -13,7 +13,7 @@ namespace LibraryApp.ApiTests
 {
     public class Tests
     {
-        private DbContextOptions<LibraryContext> options =new DbContextOptionsBuilder<LibraryContext>()
+        private DbContextOptions<LibraryContext> options = new DbContextOptionsBuilder<LibraryContext>()
                 .UseInMemoryDatabase(databaseName: "Data Source = (localdb)\\MSSQLLocalDB; Initial Catalog = LibraryAppData")
                 .Options;
 

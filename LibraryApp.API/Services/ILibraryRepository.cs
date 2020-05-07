@@ -1,4 +1,5 @@
-﻿using LibraryApp.API.ResourceParameters;
+﻿using LibraryApp.API.Helpers;
+using LibraryApp.API.ResourceParameters;
 using LibraryApp.Data.Entities;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace LibraryApp.API.Services
         void DeleteBook(Book book);
         IEnumerable<Book> GetBooks(int authorId);
         IEnumerable<Author> GetAuthors();
-        IEnumerable<Author> GetAuthors(AuthorResourceParameters authorResourceParameters);
+        PagedList<Author> GetAuthors(AuthorResourceParameters authorResourceParameters);
         Author GetAuthor(int authorId);
         void AddAuthor(Author author);
         void DeleteAuthor(Author author);

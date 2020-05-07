@@ -1,4 +1,5 @@
-﻿using LibraryApp.API.ResourceParameters;
+﻿using LibraryApp.API.Helpers;
+using LibraryApp.API.ResourceParameters;
 using LibraryApp.Data.DbContexts;
 using LibraryApp.Data.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -51,18 +52,22 @@ namespace LibraryApp.API.Services
         {
             return _context.Authors.ToList();
         }
-        public IEnumerable<Author> GetAuthors(AuthorResourceParameters authorResourceParameters)
+        public PagedList<Author> GetAuthors(AuthorResourceParameters authorResourceParameters)
         {
-            if (string.IsNullOrWhiteSpace(authorResourceParameters.SearchQuery)) return _context.Authors.ToList();
+            //if (string.IsNullOrWhiteSpace(authorResourceParameters.SearchQuery)) return _context.Authors.ToList();
 
             var collection = _context.Authors as IQueryable<Author>;
 
+            if (!string.IsNullOrWhiteSpace(authorResourceParameters.SearchQuery))
+            {
+                authorResourceParameters.SearchQuery.Trim();
+                collection = collection.Where(a => a.FirstName.Contains(authorResourceParameters.SearchQuery)
+                || a.LastName.Contains(authorResourceParameters.SearchQuery));
+            }
 
-            authorResourceParameters.SearchQuery.Trim();
-            collection = collection.Where(a => a.FirstName.Contains(authorResourceParameters.SearchQuery)
-            || a.LastName.Contains(authorResourceParameters.SearchQuery));
-
-            return collection.ToList();
+            return PagedList<Author>.Create(collection, 
+                authorResourceParameters.PageNumber, 
+                authorResourceParameters.PageSize);
         }
 
         public bool Save()

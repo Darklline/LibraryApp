@@ -25,8 +25,8 @@ namespace LibraryApp.API
                 {
                     var context = scope.ServiceProvider.GetService<LibraryContext>();
                     //for testing
-                    context.Database.EnsureDeleted();
-                    context.Database.EnsureCreated();
+                    //context.Database.EnsureDeleted();
+                    //context.Database.EnsureCreated();
                     context.Database.Migrate();
                 }
                 catch (Exception ex)
