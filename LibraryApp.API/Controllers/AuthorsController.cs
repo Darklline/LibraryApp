@@ -23,17 +23,24 @@ namespace LibraryApp.API.Controllers
     {
         private readonly ILibraryRepository libraryRepository;
         private readonly IMapper mapper;
+        private readonly IPropertyMappingService propertyMappingService;
 
-        public AuthorsController(ILibraryRepository libraryRepository, IMapper mapper)
+        public AuthorsController(ILibraryRepository libraryRepository, IMapper mapper, IPropertyMappingService propertyMappingService)
         {
             this.libraryRepository = libraryRepository ?? throw new ArgumentNullException(nameof(libraryRepository));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            this.propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(propertyMappingService));
         }
 
         [HttpGet(Name = "GetAuthors")]
         [HttpHead]
         public ActionResult<IEnumerable<AuthorDto>> GetAuthors([FromQuery] AuthorResourceParameters authorResourceParameters)
         {
+            if(!propertyMappingService.ValidMappingExistsFor<AuthorDto, Author>(authorResourceParameters.OrderBy))
+            {
+                return BadRequest();
+            }
+
             var authorsFromRepo = libraryRepository.GetAuthors(authorResourceParameters);
 
             var previousPageLink = authorsFromRepo.HasPrevious ?
@@ -103,6 +110,7 @@ namespace LibraryApp.API.Controllers
                     return Url.Link("GetAuthors",
                         new
                         {
+                            orderBy = authorResourceParameters.OrderBy,
                             pageNumber = authorResourceParameters.PageNumber - 1,
                             pageSize = authorResourceParameters.PageSize,
                             searchQuery = authorResourceParameters.SearchQuery
@@ -111,6 +119,7 @@ namespace LibraryApp.API.Controllers
                     return Url.Link("GetAuthors",
                         new
                         {
+                            orderBy = authorResourceParameters.OrderBy,
                             pageNumber = authorResourceParameters.PageNumber + 1,
                             pageSize = authorResourceParameters.PageSize,
                             searchQuery = authorResourceParameters.SearchQuery
@@ -119,6 +128,7 @@ namespace LibraryApp.API.Controllers
                     return Url.Link("GetAuthors",
                         new
                         {
+                            orderBy = authorResourceParameters.OrderBy,
                             pageNumber = authorResourceParameters.PageNumber,
                             pageSize = authorResourceParameters.PageSize,
                             searchQuery = authorResourceParameters.SearchQuery

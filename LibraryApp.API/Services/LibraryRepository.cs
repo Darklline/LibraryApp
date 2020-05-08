@@ -1,4 +1,5 @@
 ﻿using LibraryApp.API.Helpers;
+using LibraryApp.API.Models;
 using LibraryApp.API.ResourceParameters;
 using LibraryApp.Data.DbContexts;
 using LibraryApp.Data.Entities;
@@ -14,6 +15,13 @@ namespace LibraryApp.API.Services
     public class LibraryRepository : ILibraryRepository, IDisposable
     {
         private readonly LibraryContext _context;
+        private readonly IPropertyMappingService _propertyMappingService;
+
+        public LibraryRepository(LibraryContext context, IPropertyMappingService propertyMappingService)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(propertyMappingService));
+        }
         public LibraryRepository(LibraryContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
@@ -63,6 +71,13 @@ namespace LibraryApp.API.Services
                 authorResourceParameters.SearchQuery.Trim();
                 collection = collection.Where(a => a.FirstName.Contains(authorResourceParameters.SearchQuery)
                 || a.LastName.Contains(authorResourceParameters.SearchQuery));
+            }
+            if(!string.IsNullOrWhiteSpace(authorResourceParameters.OrderBy))
+            {
+                var authorPropertyMappingDictionary = _propertyMappingService.GetPropertyMapping<AuthorDto, Author>();
+
+
+                collection = collection.ApplySort(authorResourceParameters.OrderBy, authorPropertyMappingDictionary);
             }
 
             return PagedList<Author>.Create(collection, 

@@ -85,6 +85,7 @@ namespace LibraryApp.API
                    };
                };
            });
+            services.AddTransient<IPropertyMappingService, PropertyMappingService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<ILibraryRepository, LibraryRepository>();
             //services.AddDbContext<LibraryContext>(opt => opt.UseInMemoryDatabase(Configuration.GetConnectionString("LibraryConnex")));
