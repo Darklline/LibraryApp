@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 using Moq;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using System;
 using System.Collections;
 using System.Linq;
 
@@ -101,7 +102,7 @@ namespace LibraryApp.ApiTests
             using (var context = new LibraryContext(options))
             {
                 var service = new LibraryRepository(context);
-                var author = new Author(){ Id = 3 };
+                var author = new Author() { Id = 3 };
 
                 Assert.IsTrue(context.Authors.Any(a => a.Id == 3));
                 service.DeleteAuthor(author);
