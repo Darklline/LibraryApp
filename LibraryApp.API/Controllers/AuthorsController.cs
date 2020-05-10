@@ -24,12 +24,14 @@ namespace LibraryApp.API.Controllers
         private readonly ILibraryRepository libraryRepository;
         private readonly IMapper mapper;
         private readonly IPropertyMappingService propertyMappingService;
+        private readonly IPropertyCheckerService propertyCheckerService;
 
-        public AuthorsController(ILibraryRepository libraryRepository, IMapper mapper, IPropertyMappingService propertyMappingService)
+        public AuthorsController(ILibraryRepository libraryRepository, IMapper mapper, IPropertyMappingService propertyMappingService, IPropertyCheckerService propertyCheckerService)
         {
             this.libraryRepository = libraryRepository ?? throw new ArgumentNullException(nameof(libraryRepository));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.propertyMappingService = propertyMappingService ?? throw new ArgumentNullException(nameof(propertyMappingService));
+            this.propertyCheckerService = propertyCheckerService ?? throw new ArgumentNullException(nameof(propertyCheckerService));
         }
 
         [HttpGet(Name = "GetAuthors")]
@@ -37,6 +39,11 @@ namespace LibraryApp.API.Controllers
         public IActionResult GetAuthors([FromQuery] AuthorResourceParameters authorResourceParameters)
         {
             if(!propertyMappingService.ValidMappingExistsFor<AuthorDto, Author>(authorResourceParameters.OrderBy))
+            {
+                return BadRequest();
+            }
+
+            if(!propertyCheckerService.TypeHasProperties<AuthorDto>(authorResourceParameters.Fields))
             {
                 return BadRequest();
             }
@@ -67,13 +74,21 @@ namespace LibraryApp.API.Controllers
         }
 
         [HttpGet("{authorId}", Name = "GetAuthor")]
-        public IActionResult GetAuthor(int authorId)
+        public IActionResult GetAuthor(int authorId, string fields)
         {
+            if (!propertyCheckerService.TypeHasProperties<AuthorDto>(fields))
+            {
+                return BadRequest();
+            }
+
             var authorFromRepo = libraryRepository.GetAuthor(authorId);
 
-            if (authorFromRepo == null) return NotFound();
+            if (authorFromRepo == null)
+            {
+                return NotFound();
+            }
 
-            return Ok(mapper.Map<AuthorDto>(authorFromRepo));
+            return Ok(mapper.Map<AuthorDto>(authorFromRepo).ShapeData(fields));
         }
 
         [HttpPost]
