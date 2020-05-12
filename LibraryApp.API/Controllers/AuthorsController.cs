@@ -105,7 +105,7 @@ namespace LibraryApp.API.Controllers
             return Ok(linkedResourceToReturn);
         }
 
-        [HttpPost]
+        [HttpPost(Name ="CreateAuthor")]
         public ActionResult<Author> CreateAuthor(Author author)
         {
             libraryRepository.AddAuthor(author);
