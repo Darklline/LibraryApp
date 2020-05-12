@@ -103,7 +103,12 @@ namespace LibraryApp.API.Controllers
             libraryRepository.AddAuthor(author);
             libraryRepository.Save();
 
-            return CreatedAtRoute("GetAuthor", new { authorId = author.Id }, author);
+            var links = CreateLinksForAuthor(author.Id, null);
+
+            var linkedResourceToReturn = author.ShapeData(null) as IDictionary<string, object>;
+            linkedResourceToReturn.Add("links", links);
+
+            return CreatedAtRoute("GetAuthor", new { authorId = linkedResourceToReturn["Id"] }, linkedResourceToReturn);
         }
         [HttpDelete("{authorId}", Name = "DeleteAuthor")]
         public ActionResult DeleteAuthor(int authorId)
