@@ -70,7 +70,25 @@ namespace LibraryApp.API.Controllers
 
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
 
-            return Ok(mapper.Map<IEnumerable<AuthorDto>>(authorsFromRepo).ShapeData(authorResourceParameters.Fields));
+            var links = CreateLinksForAuthors(authorResourceParameters);
+
+            var shapedAuthors = mapper.Map<IEnumerable<AuthorDto>>(authorsFromRepo).ShapeData(authorResourceParameters.Fields);
+
+            var shapedAuthorsWithLinks = shapedAuthors.Select(author =>
+            {
+                var authorAsDictionary = author as IDictionary<string, object>;
+                var authorLinks = CreateLinksForAuthor((int)authorAsDictionary["Id"], null);
+                authorAsDictionary.Add("links", authorLinks);
+                return authorAsDictionary;
+            });
+
+            var linkedCollectionResource = new
+            {
+                value = shapedAuthorsWithLinks,
+                links
+            };
+
+            return Ok(linkedCollectionResource);
         }
 
         [HttpGet("{authorId}", Name = "GetAuthor")]
@@ -152,6 +170,7 @@ namespace LibraryApp.API.Controllers
                             pageSize = authorResourceParameters.PageSize,
                             searchQuery = authorResourceParameters.SearchQuery
                         });
+                case ResourceUriType.Current:
                 default:
                     return Url.Link("GetAuthors",
                         new
@@ -188,6 +207,15 @@ namespace LibraryApp.API.Controllers
             links.Add(
                 new LinkDto(Url.Link("GetBooksForAuthor", new { authorId }), "books", "GET"));
             
+
+            return links;
+        }
+        private IEnumerable<LinkDto> CreateLinksForAuthors(AuthorResourceParameters authorResourceParameters)
+        {
+            var links = new List<LinkDto>();
+
+            links.Add(new LinkDto(CreateAuthorsResourceUri(authorResourceParameters, ResourceUriType.Current), "self", "GET"));
+
 
             return links;
         }
