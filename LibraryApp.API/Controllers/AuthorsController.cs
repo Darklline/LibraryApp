@@ -50,27 +50,17 @@ namespace LibraryApp.API.Controllers
 
             var authorsFromRepo = libraryRepository.GetAuthors(authorResourceParameters);
 
-            var previousPageLink = authorsFromRepo.HasPrevious ?
-                CreateAuthorsResourceUri(authorResourceParameters,
-                ResourceUriType.PreviousPage) : null;
-
-            var nextPageLink = authorsFromRepo.HasNext ?
-                CreateAuthorsResourceUri(authorResourceParameters,
-                ResourceUriType.NextPage) : null;
-
             var paginationMetadata = new
             {
                 totalCount = authorsFromRepo.TotalCount,
                 pageSize = authorsFromRepo.PageSize,
                 currentPage = authorsFromRepo.CurrentPage,
-                totalPages = authorsFromRepo.TotalPages,
-                previousPageLink,
-                nextPageLink
+                totalPages = authorsFromRepo.TotalPages
             };
 
             Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
 
-            var links = CreateLinksForAuthors(authorResourceParameters);
+            var links = CreateLinksForAuthors(authorResourceParameters, authorsFromRepo.HasNext, authorsFromRepo.HasPrevious);
 
             var shapedAuthors = mapper.Map<IEnumerable<AuthorDto>>(authorsFromRepo).ShapeData(authorResourceParameters.Fields);
 
@@ -210,12 +200,21 @@ namespace LibraryApp.API.Controllers
 
             return links;
         }
-        private IEnumerable<LinkDto> CreateLinksForAuthors(AuthorResourceParameters authorResourceParameters)
+        private IEnumerable<LinkDto> CreateLinksForAuthors(AuthorResourceParameters authorResourceParameters, bool hasNext, bool hasPrevious)
         {
             var links = new List<LinkDto>();
 
             links.Add(new LinkDto(CreateAuthorsResourceUri(authorResourceParameters, ResourceUriType.Current), "self", "GET"));
 
+            if(hasNext)
+            {
+                links.Add(new LinkDto(CreateAuthorsResourceUri(authorResourceParameters, ResourceUriType.NextPage), "nextPage", "GET"));
+            }
+
+            if (hasPrevious)
+            {
+                links.Add(new LinkDto(CreateAuthorsResourceUri(authorResourceParameters, ResourceUriType.PreviousPage), "previousPage", "GET"));
+            }
 
             return links;
         }
