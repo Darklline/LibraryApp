@@ -30,7 +30,7 @@ namespace LibraryApp.API.Controllers
             this.mapper = mapper;
         }
 
-        [HttpGet]
+        [HttpGet(Name = "GetBooksForAuthor")]
         public ActionResult<IEnumerable<Book>> GetBooksForAuthor(int authorId)
         {
             if (!libraryRepository.AuthorExists(authorId)) return NotFound();
@@ -51,7 +51,7 @@ namespace LibraryApp.API.Controllers
             return Ok(mapper.Map<BookDto>(bookForAuthorFromRepo));
         }
 
-        [HttpPost]
+        [HttpPost(Name = "CreateBookForAuthor")]
         public ActionResult<Book> CreateBookForAuthor(int authorId, Book book)
         {
             if (!libraryRepository.AuthorExists(authorId)) return NotFound();
