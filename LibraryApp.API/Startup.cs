@@ -32,6 +32,16 @@ namespace LibraryApp.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpCacheHeaders((expirationModelOptions) =>
+            {
+                expirationModelOptions.MaxAge = 60;
+                expirationModelOptions.CacheLocation = Marvin.Cache.Headers.CacheLocation.Private;
+            },
+            (validationModelOptions) =>
+            {
+                validationModelOptions.MustRevalidate = true;
+            });
+
             services.AddResponseCaching();
 
             services.AddControllers(setupAction =>
@@ -134,6 +144,8 @@ namespace LibraryApp.API
             }
 
             app.UseResponseCaching();
+
+            app.UseHttpCacheHeaders();
 
             app.UseRouting();
 

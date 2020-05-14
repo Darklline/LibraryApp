@@ -2,6 +2,7 @@
 using LibraryApp.API.Models;
 using LibraryApp.API.Services;
 using LibraryApp.Data.Entities;
+using Marvin.Cache.Headers;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +20,9 @@ namespace LibraryApp.API.Controllers
 {
     [ApiController]
     [Route("api/Authors/{authorId}/books")]
-    [ResponseCache(CacheProfileName = "240SecondsCacheProfile")]
+    //[ResponseCache(CacheProfileName = "240SecondsCacheProfile")]
+    [HttpCacheExpiration(CacheLocation = CacheLocation.Public)]
+    [HttpCacheValidation(MustRevalidate = true)]
     public class BooksController : ControllerBase
     {
         private readonly ILibraryRepository libraryRepository;

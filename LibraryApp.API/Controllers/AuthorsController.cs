@@ -15,12 +15,15 @@ using System.Security.AccessControl;
 using LibraryApp.API.Helpers;
 using System.Text.Json;
 using Microsoft.Net.Http.Headers;
+using Marvin.Cache.Headers;
 
 namespace LibraryApp.API.Controllers
 {
     [ApiController]
     [Route("api/authors")]
-    [ResponseCache(CacheProfileName = "240SecondsCacheProfile")]
+    //[ResponseCache(CacheProfileName = "240SecondsCacheProfile")]
+    [HttpCacheExpiration(CacheLocation = CacheLocation.Public)]
+    [HttpCacheValidation(MustRevalidate = true)]
     public class AuthorsController : ControllerBase
     {
         private readonly ILibraryRepository libraryRepository;
