@@ -14,6 +14,7 @@ using LibraryApp.API.ResourceParameters;
 using System.Security.AccessControl;
 using LibraryApp.API.Helpers;
 using System.Text.Json;
+using Microsoft.Net.Http.Headers;
 
 namespace LibraryApp.API.Controllers
 {
@@ -82,8 +83,13 @@ namespace LibraryApp.API.Controllers
         }
 
         [HttpGet("{authorId}", Name = "GetAuthor")]
-        public IActionResult GetAuthor(int authorId, string fields)
+        public IActionResult GetAuthor(int authorId, string fields, [FromHeader(Name = "Accept")] string mediaType)
         {
+            if(!MediaTypeHeaderValue.TryParse(mediaType, out MediaTypeHeaderValue parsedMediaType))
+            {
+                return BadRequest();
+            }
+
             if (!propertyCheckerService.TypeHasProperties<AuthorDto>(fields))
             {
                 return BadRequest();
@@ -96,13 +102,19 @@ namespace LibraryApp.API.Controllers
                 return NotFound();
             }
 
-            var links = CreateLinksForAuthor(authorId, fields);
+            if (parsedMediaType.MediaType == "application/vnd.wojtek.hateoas+json")
+            {
 
-            var linkedResourceToReturn = mapper.Map<AuthorDto>(authorFromRepo).ShapeData(fields) as IDictionary<string, object>;
+                var links = CreateLinksForAuthor(authorId, fields);
 
-            linkedResourceToReturn.Add("links", links);
+                var linkedResourceToReturn = mapper.Map<AuthorDto>(authorFromRepo).ShapeData(fields) as IDictionary<string, object>;
 
-            return Ok(linkedResourceToReturn);
+                linkedResourceToReturn.Add("links", links);
+
+                return Ok(linkedResourceToReturn);
+            }
+
+            return Ok(mapper.Map<AuthorDto>(authorFromRepo).ShapeData(fields));
         }
 
         [HttpPost(Name ="CreateAuthor")]

@@ -16,6 +16,7 @@ using Newtonsoft.Json.Serialization;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace LibraryApp.API
 {
@@ -85,6 +86,16 @@ namespace LibraryApp.API
                    };
                };
            });
+            services.Configure<MvcOptions>(config =>
+            {
+                var newtonsoftJsonOutFormatter = config.OutputFormatters.OfType<NewtonsoftJsonOutputFormatter>()?.FirstOrDefault();
+
+            if (newtonsoftJsonOutFormatter != null)
+                {
+                    newtonsoftJsonOutFormatter.SupportedMediaTypes.Add("application/vnd.wojtek.hateoas+json");
+                }
+            });
+
             services.AddTransient<IPropertyMappingService, PropertyMappingService>();
             services.AddTransient<IPropertyCheckerService, PropertyCheckerService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
